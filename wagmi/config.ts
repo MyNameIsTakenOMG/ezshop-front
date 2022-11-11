@@ -4,7 +4,7 @@ import {publicProvider} from 'wagmi/providers/public'
 import {InjectedConnector} from 'wagmi/connectors/injected'
 
 const {chains,provider} = configureChains([chain.goerli],[
-    alchemyProvider({apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}),
+    alchemyProvider({apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!}),
     publicProvider()
 ])
 
