@@ -10,11 +10,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return <div className='w-full min-h-screen'>
     <WagmiConfig client={wagmiClient}>
-      <Layout >
-        <NotificationProvider>
+      <NotificationProvider>
+        <Layout >
           <Component {...pageProps} />  
-        </NotificationProvider>
-      </Layout>
+        </Layout>
+      </NotificationProvider>
     </WagmiConfig>
   </div>
 }
