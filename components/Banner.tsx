@@ -55,7 +55,7 @@ export default function Banner({setOpenWallet,setOpenCart}:BannerProps) {
   }
 
   return (
-    <div className="z-50 backdrop-blur sticky top-0 w-full p-4 bg-purple-500/80 text-xl text-white flex flex-row flex-nowrap justify-between items-center shadow">
+    <div className="z-10 backdrop-blur sticky top-0 w-full p-4 bg-purple-500/80 text-xl text-white flex flex-row flex-nowrap justify-between items-center shadow">
       <div className="flex flex-row flex-nowrap gap-x-2 cursor-pointer" id='home' onClick={handleLink}>
         <div className='text-purple-500 bg-white p-0.5 rounded-sm' style={{fontFamily:"'Dancing Script', cursive;"}}>EZ</div>
         <div className="text-xl">EZshop</div>

@@ -1,4 +1,4 @@
-import { Form, Button } from '@web3uikit/core'
+import { Form, Button, useNotification, notifyType, IPosition } from '@web3uikit/core'
 import { FormDataReturned } from '@web3uikit/core/dist/lib/Form/types';
 import axios from 'axios';
 import Head from 'next/head';
@@ -9,6 +9,11 @@ import addresses from '../contracts/addresses.json'
 import EZNftAbi from '../contracts/EZNft.abi.json'
 
 export default function create_nft() {
+  // notifications
+  const dispatch = useNotification()
+  const handleNotifications = (type:notifyType,position:IPosition,message?:string)=>{
+    dispatch({type,position,message})
+  } 
 
   const {address : userAddress} = useAccount()
   const {writeAsync: mintNft} = useContractWrite({
@@ -76,10 +81,13 @@ export default function create_nft() {
       const tx = await mintNft?.({
         recklesslySetUnpreparedArgs:[userAddress,tokenUri]
       })
+      handleNotifications('info','topR','processing...')
       await tx?.wait()
+      handleNotifications('success','topR','nft created')
       console.log('nft created successfully----------------------')
 
     } catch (error) {
+      handleNotifications('error','topR','failed to create nft')
       console.log('failed to create nft -------------------------------')
       console.log(error)
     }

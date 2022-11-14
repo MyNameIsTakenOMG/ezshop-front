@@ -5,7 +5,7 @@ import Connect from '../components/Connect'
 import client from '../apollo/config'
 import { gql } from '@apollo/client'
 import NftCard from '../components/NftCard'
-import { Input, Modal } from '@web3uikit/core'
+import { Input, IPosition, Modal, notifyType, useNotification } from '@web3uikit/core'
 import {Edit} from '@web3uikit/icons'
 import addresses from '../contracts/addresses.json'
 import EZMarketplaceAbi from '../contracts/EZMarketplace.abi.json'
@@ -37,6 +37,11 @@ query($id: ID!){
 `
 
 export default function my_nfts() {
+  // notifications
+  const dispatch = useNotification()
+  const handleNotifications = (type:notifyType,position:IPosition,message?:string)=>{
+    dispatch({type,position,message})
+  } 
 
   const {address:userAddress,status} = useAccount()
   const [totalNum, setTotalNum] = useState(0)
@@ -131,7 +136,9 @@ export default function my_nfts() {
         const getApprovalTx = await getApproval?.({
           recklesslySetUnpreparedArgs:[addresses.EZMarketplace,tokenId]
         })
-        await getApprovalTx?.wait(1)
+        handleNotifications('info','topR','getting approval')
+        await getApprovalTx?.wait()
+        handleNotifications('success','topR','approval got')
         console.log('approval got successfully -------------------------')
         console.log('getting nft ready for sale----------------------------')
         if(Number(newNftPrice)<=0){
@@ -140,7 +147,9 @@ export default function my_nfts() {
         const sellNftTx = await sellNft?.({
           recklesslySetUnpreparedArgs:[nftAddress,tokenId,BigInt(Number(newNftPrice)*1e18)]
         })
-        await sellNftTx?.wait(1)
+        handleNotifications('info','topR','listing nft')
+        await sellNftTx?.wait()
+        handleNotifications('success','topR','nft on sale')
         console.log('nft is on sale now ------------------------')
         fetchUserNfts()
       }
@@ -153,11 +162,14 @@ export default function my_nfts() {
         const updateNftTx = await updateNft?.({
           recklesslySetUnpreparedArgs:[nftAddress,tokenId,BigInt(Number(newNftPrice)*1e18)]
         })
-        await updateNftTx?.wait(1)
+        handleNotifications('info','topR','updating price')
+        await updateNftTx?.wait()
+        handleNotifications('success','topR','price updated')
         console.log('updated price for nft successfully ------------------------')
         fetchUserNfts()
       }
     } catch (error) {
+      handleNotifications('error','topR','failed to list nft')
       console.log('error: ',error)
       console.log('failed to update the price for the nft or failed to sell the nft')
     }
@@ -177,17 +189,21 @@ export default function my_nfts() {
       if(!oldNftPrice || oldNftPrice <=0){
         console.log('old nft price: ',oldNftPrice)
         console.log('the item is not for sale yet...') 
+        handleNotifications('warning','topR','NFT not for sale yet')
       }
       else{
         console.log('cancelling sale------------------------')
         const tx = await cancelSale?.({
           recklesslySetUnpreparedArgs:[nftAddress,tokenId]
         })
-        await tx?.wait(1)
+        handleNotifications('info','topR','processing...')
+        await tx?.wait()
+        handleNotifications('success','topR','sale cancelled')
         console.log('cancelled sale successfully------------------------')
         fetchUserNfts()
       }
     } catch (error) {
+      handleNotifications('error','topR','failed to cancel sale')
       console.log('error: ',error)
     }
   }

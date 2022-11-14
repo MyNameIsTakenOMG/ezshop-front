@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import NftCard from '../components/NftCard'
 import { useAccount, useContractReads, useContractWrite } from 'wagmi'
-import {Modal} from '@web3uikit/core'
+import {IPosition, Modal, notifyType, useNotification} from '@web3uikit/core'
 import addresses from '../contracts/addresses.json'
 import EZMarketplace from '../contracts/EZMarketplace.abi.json'
 import EZNftAbi from '../contracts/EZNft.abi.json'
@@ -24,6 +24,12 @@ export default function Home() {
 
   const [nftArr, setNftArr] = useState<NftProps[]>([])
   const {address: userAddress,status} = useAccount()
+
+  // notifications
+  const dispatch = useNotification()
+  const handleNotifications = (type:notifyType,position:IPosition,message?:string)=>{
+    dispatch({type,position,message})
+  } 
 
   // perchase form
   const [nftAddress, setNftAddress] = useState('')
@@ -86,9 +92,12 @@ export default function Home() {
       const buyNftTx = await buyNft?.({
         recklesslySetUnpreparedArgs:[addresses.EZToken,nftAddress,tokenId]
       })
-      await buyNftTx?.wait(1)
-      console.log('purchased the bft successfully------------------------')
+      handleNotifications('info','topR','processing...')
+      await buyNftTx?.wait()
+      handleNotifications('success','topR','Bought the nft!')
+      console.log('purchased the nft successfully------------------------')
     } catch (error) {
+      handleNotifications('error','topR','Error...')
       console.log('failed to purchase the nft --------------------')
       console.log('error: ',error)
     }

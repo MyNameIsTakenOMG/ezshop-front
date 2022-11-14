@@ -1,4 +1,4 @@
-import { Form, Modal, TabList, Tab, Button } from '@web3uikit/core'
+import { Form, Modal, TabList, Tab, Button, useNotification, notifyType, IPosition } from '@web3uikit/core'
 import { FormDataReturned } from '@web3uikit/core/dist/lib/Form/types'
 import {CreditCard} from '@web3uikit/icons'
 import React, { useEffect, useRef, useState } from 'react'
@@ -13,6 +13,12 @@ interface WalletProps{
 }
 
 export default function Wallet({setOpen}: WalletProps) {
+
+  // notifications
+  const dispatch = useNotification()
+  const handleNotifications = (type:notifyType,position:IPosition,message?:string)=>{
+    dispatch({type,position,message})
+  } 
 
   const [openTokenForm, setOpenTokenForm] = useState(false)
   const [openAllowanceForm, setOpenAllowanceForm] = useState(false)
@@ -93,10 +99,13 @@ export default function Wallet({setOpen}: WalletProps) {
               value: ethers.utils.parseEther(String(tokenAMount.current/1000))
             }
           })
-        await tx?.wait(5)
+        handleNotifications('info','topR','processing...')
+        await tx?.wait()
+        handleNotifications('success','topR','Tokens bought')
         console.log('tokens bought successfully-------------------------')
         setOpenTokenForm(false)
     } catch (error) {
+        handleNotifications('error','topR','Failed to buy tokens')
         console.log(error)
         setOpenTokenForm(false)
     }
@@ -114,14 +123,18 @@ export default function Wallet({setOpen}: WalletProps) {
         const tx =await addAllowance?.({
           recklesslySetUnpreparedArgs:[addresses.EZMarketplace,BigInt(allowanceToManage.current*1e18)]  
         })
-        await tx?.wait(5)
+        handleNotifications('info','topR','processing...')
+        await tx?.wait()
+        handleNotifications('success','topR','allowance added')
         console.log('allowance added successfully-----------------------')
       }
       if(addOrSubtract.current == 'subtract'){
         const tx =await subtractAllowance?.({
           recklesslySetUnpreparedArgs:[addresses.EZMarketplace,BigInt(allowanceToManage.current*1e18)]
         })
-        await tx?.wait(5)
+        handleNotifications('info','topR','processing...')
+        await tx?.wait()
+        handleNotifications('info','topR','allowance subtracted')
         console.log('allowance subtracted successfully-----------------------')
       }
       setOpenAllowanceForm(false)
