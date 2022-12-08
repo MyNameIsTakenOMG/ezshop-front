@@ -7,6 +7,7 @@ import addresses from '../contracts/addresses.json'
 import EZTokenAbi from '../contracts/EZToken.abi.json'
 import {ethers} from 'ethers'
 import Head from 'next/head'
+import { tokenConverter } from '../utils'
 
 interface WalletProps{
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -170,14 +171,18 @@ export default function Wallet({setOpen}: WalletProps) {
         >
           <div className='flex flex-col flex-nowrap gap-3'>
             <div className='flex flex-row flex-nowrap justify-between'>
-              <p>Balance:</p>
-              <p className='grow pr-2 text-right'>{data?.[0]?.toString()}</p>
-              <p>EZT(EZToken)</p>
+              <>
+                <p>Balance:</p>
+                {data?.[0] && <p className='grow pr-2 text-right'>{tokenConverter(data[0].toString())}</p>}
+                <p>EZT(EZToken)</p>
+              </>
             </div>
             <div className='flex flex-row flex-nowrap justify-between'>
-              <p>Allowance:</p>
-              <p className='grow pr-2 text-right'>{data?.[1]?.toString()}</p>
-              <p>EZT(EZToken)</p>
+              <>
+                <p>Allowance:</p>
+                {data?.[1] && <p className='grow pr-2 text-right'>{tokenConverter(data?.[1]?.toString())}</p>}
+                <p>EZT(EZToken)</p>
+              </>
             </div>
             <div className='flex flex-row flex-nowrap pb-2'>
               <Button color='blue' theme='colored' text='tokens' onClick={handleOpenTokenForm}/>

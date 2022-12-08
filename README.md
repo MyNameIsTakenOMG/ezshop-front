@@ -26,7 +26,7 @@ EZshop is a nft market place where users can explore and manage nfts. And of cou
 - Implementing pagination for listing nfts. By the time I am writing, `offset-based` pagination is what the documentation of `theGraph` recommends, `cursor-based` pagination may not be possible or may need extra overheads, not to mention `relay-style cursor` pagination.
 - Adding filters for exploring nfts. With filters, searching will be more efficient. **Possible solution** : back in the `subgraph` project, connect to the `EZMarketplace.sol` contract and call the `tokenURI` function to fetch metadata of the nft, and store the metadata in `theGraph` .
 - Categorizing nfts for the users.  Place nfts in different groups makes it more easier for users to manage their nfts. **Possible solution** :  adding an extra property `collection` to each nft metadata when creating nfts, then in `subgraph` project, fetch metadata of nfts and store them in `theGraph` . 
-- Some UI issues.  Such as in the `create nft` page, after confirming creating nft,  the whole form is not reset, so considering using a custom `form` instead of the one from `web3uikit` package. Also, the native token EZToken is displaying as is, in a `bigint` format, should 'convert' to a normal number and so on.
+- Some UI issues.  Such as in the `create nft` page, after confirming creating nft,  the whole form is not reset, so considering using a custom `form` instead of the one from `web3uikit` package and so on.
 
 
 # Technologies

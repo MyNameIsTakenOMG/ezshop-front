@@ -4,6 +4,7 @@ import { useContractRead } from 'wagmi'
 import addresses from '../contracts/addresses.json'
 import EZNftAbi from '../contracts/EZNft.abi.json'
 import axios from 'axios'
+import { tokenConverter } from '../utils'
 
 interface NftCardProps{
   nftAddress: string,
@@ -54,7 +55,7 @@ export default function NftCard({nftAddress,seller,tokenId,price,handleOpenPrice
           : handleOpenPurchaseForm 
             ? ()=>{handleOpenPurchaseForm(nftAddress,tokenId,price)}
             : undefined} 
-        description={price <= 0 ? '':`Price: ${String(price)}`} 
+        description={price <= 0 ? '':`Price: ${tokenConverter(String(price))}`} 
         isSelected={false} 
         title={imageName} 
         tooltipMoveBody={-90} 
